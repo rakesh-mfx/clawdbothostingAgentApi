@@ -28,7 +28,27 @@ Route::get('/.well-known/jwks.json', JwksController::class);
 
 /*
 |--------------------------------------------------------------------------
-| Protected Routes (require API key)
+| JWT Protected Routes (for frontend/browser access)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['jwt.token', 'log.requests'])->group(function () {
+    // Server metrics endpoints for frontend
+    Route::prefix('servers/{server}')->group(function () {
+        Route::prefix('metrics')->group(function () {
+            Route::get('/all', [MetricsController::class, 'all']);
+            Route::get('/cpu', [MetricsController::class, 'cpu']);
+            Route::get('/memory', [MetricsController::class, 'memory']);
+            Route::get('/disk', [MetricsController::class, 'disk']);
+            Route::get('/network', [MetricsController::class, 'network']);
+            Route::get('/db-connections', [MetricsController::class, 'dbConnections']);
+        });
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Protected Routes (require API key - for server-to-server)
 |--------------------------------------------------------------------------
 */
 
