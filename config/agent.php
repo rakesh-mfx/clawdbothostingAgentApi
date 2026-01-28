@@ -1,0 +1,47 @@
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | Agent Connection Settings
+    |--------------------------------------------------------------------------
+    */
+    'timeout' => env('AGENT_TIMEOUT', 30),
+    'default_port' => env('AGENT_DEFAULT_PORT', 9999),
+    'verify_ssl' => env('AGENT_VERIFY_SSL', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | JWT Token Settings
+    |--------------------------------------------------------------------------
+    */
+    'jwt' => [
+        'algorithm' => env('JWT_ALGORITHM', 'RS256'),
+        'audience' => env('JWT_AUDIENCE', 'clawdbot-agent'),
+        'issuer' => env('APP_URL', 'https://agentapi.clawdbot.com'),
+        'lifetime' => env('JWT_LIFETIME', 3600), // 1 hour
+        'private_key' => env('JWT_PRIVATE_KEY'),
+        'public_key' => env('JWT_PUBLIC_KEY'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Panel Integration
+    |--------------------------------------------------------------------------
+    */
+    'panel' => [
+        'url' => env('PANEL_URL', 'https://clawdbot.com'),
+        'api_key' => env('PANEL_API_KEY'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logging
+    |--------------------------------------------------------------------------
+    */
+    'logging' => [
+        'enabled' => env('AGENT_LOGGING_ENABLED', true),
+        'channel' => env('AGENT_LOG_CHANNEL', 'agent'),
+        'retention_days' => env('AGENT_LOG_RETENTION_DAYS', 7),
+    ],
+];
