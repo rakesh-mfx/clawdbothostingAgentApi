@@ -96,12 +96,12 @@ class ServerLookupService
                     return $server['agent_url'];
                 }
 
-                // Construct from IP/hostname
-                $host = $server['ip_address'] ?? $server['hostname'] ?? null;
-                $port = $server['agent_port'] ?? $this->defaultPort;
+                // Get server IP
+                $ip = $server['ip_address'] ?? $server['ip'] ?? null;
 
-                if ($host) {
-                    return "http://{$host}:{$port}";
+                if ($ip) {
+                    // Use nip.io pattern for automatic DNS resolution
+                    return $this->buildNipIoUrl($ip);
                 }
             }
         } catch (\Exception $e) {
@@ -112,6 +112,20 @@ class ServerLookupService
         }
 
         return null;
+    }
+
+    /**
+     * Build nip.io URL from server IP.
+     *
+     * Example: https://clawdbotagent.65.108.209.146.nip.io
+     */
+    protected function buildNipIoUrl(string $ip): string
+    {
+        $prefix = config('agent.nip_io.prefix', 'clawdbotagent');
+        $useHttps = config('agent.nip_io.https', true);
+        $scheme = $useHttps ? 'https' : 'http';
+
+        return "{$scheme}://{$prefix}.{$ip}.nip.io";
     }
 
     /**

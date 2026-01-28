@@ -8,6 +8,7 @@ use App\Http\Controllers\GatewayController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\JwksController;
 use App\Http\Controllers\LogController;
+use App\Http\Controllers\MetricsController;
 use App\Http\Controllers\PairingController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\SystemController;
@@ -81,6 +82,18 @@ Route::middleware(['api.key', 'log.requests'])->group(function () {
             Route::get('/cpu', [SystemController::class, 'cpu']);
             Route::get('/memory', [SystemController::class, 'memory']);
             Route::get('/disk', [SystemController::class, 'disk']);
+        });
+
+        // Metrics (Prometheus proxy)
+        Route::prefix('metrics')->group(function () {
+            Route::get('/all', [MetricsController::class, 'all']);
+            Route::get('/cpu', [MetricsController::class, 'cpu']);
+            Route::get('/memory', [MetricsController::class, 'memory']);
+            Route::get('/disk', [MetricsController::class, 'disk']);
+            Route::get('/network', [MetricsController::class, 'network']);
+            Route::get('/db-connections', [MetricsController::class, 'dbConnections']);
+            Route::get('/prometheus', [MetricsController::class, 'prometheusRange']);
+            Route::get('/prometheus/query', [MetricsController::class, 'prometheusQuery']);
         });
 
         // Log management
