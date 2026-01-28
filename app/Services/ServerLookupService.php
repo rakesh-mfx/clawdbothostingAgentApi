@@ -117,7 +117,7 @@ class ServerLookupService
     /**
      * Build nip.io URL from server IP.
      *
-     * Example: https://clawdbotagent.65.108.209.146.nip.io
+     * Example: https://clawdbotagent.5-189-153-181.nip.io
      */
     protected function buildNipIoUrl(string $ip): string
     {
@@ -125,7 +125,10 @@ class ServerLookupService
         $useHttps = config('agent.nip_io.https', true);
         $scheme = $useHttps ? 'https' : 'http';
 
-        return "{$scheme}://{$prefix}.{$ip}.nip.io";
+        // Replace dots with dashes for nip.io format
+        $ipDashed = str_replace('.', '-', $ip);
+
+        return "{$scheme}://{$prefix}.{$ipDashed}.nip.io";
     }
 
     /**
