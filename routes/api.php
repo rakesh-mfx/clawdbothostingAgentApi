@@ -104,14 +104,8 @@ Route::middleware(['api.key', 'log.requests'])->group(function () {
             Route::get('/disk', [SystemController::class, 'disk']);
         });
 
-        // Metrics (Prometheus proxy)
+        // Metrics - Prometheus endpoints only (main metrics moved to JWT routes above)
         Route::prefix('metrics')->group(function () {
-            Route::get('/all', [MetricsController::class, 'all']);
-            Route::get('/cpu', [MetricsController::class, 'cpu']);
-            Route::get('/memory', [MetricsController::class, 'memory']);
-            Route::get('/disk', [MetricsController::class, 'disk']);
-            Route::get('/network', [MetricsController::class, 'network']);
-            Route::get('/db-connections', [MetricsController::class, 'dbConnections']);
             Route::get('/prometheus', [MetricsController::class, 'prometheusRange']);
             Route::get('/prometheus/query', [MetricsController::class, 'prometheusQuery']);
         });
