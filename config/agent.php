@@ -20,8 +20,16 @@ return [
         'audience' => env('JWT_AUDIENCE', 'clawdbot-agent'),
         'issuer' => env('APP_URL', 'https://agentapi.clawdbot.com'),
         'lifetime' => env('JWT_LIFETIME', 3600), // 1 hour
-        'private_key' => env('JWT_PRIVATE_KEY'),
-        'public_key' => env('JWT_PUBLIC_KEY'),
+        'private_key' => env('JWT_PRIVATE_KEY') ?: (
+            file_exists(storage_path('keys/private.pem'))
+                ? file_get_contents(storage_path('keys/private.pem'))
+                : null
+        ),
+        'public_key' => env('JWT_PUBLIC_KEY') ?: (
+            file_exists(storage_path('keys/public.pem'))
+                ? file_get_contents(storage_path('keys/public.pem'))
+                : null
+        ),
     ],
 
     /*
@@ -30,8 +38,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'panel' => [
-        'url' => env('PANEL_URL', 'https://clawdbot.com'),
-        'api_key' => env('PANEL_API_KEY'),
+        'url' => env('PANEL_URL', env('AGENT_PANEL_URL', 'https://clawdbot.com')),
+        'api_key' => env('PANEL_API_KEY', env('AGENT_PANEL_API_KEY')),
     ],
 
     /*
