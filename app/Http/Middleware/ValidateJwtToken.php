@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Services\JwtService;
 use Closure;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class ValidateJwtToken
 {
-    public function __construct(
-        protected JwtService $jwtService
-    ) {}
-
     /**
      * Handle an incoming request.
      * Validates JWT Bearer token from the main panel app.
@@ -31,10 +28,22 @@ class ValidateJwtToken
             ], 401);
         }
 
-        // Validate the JWT token
-        $payload = $this->jwtService->validateToken($token);
+        // Get the panel's public key for validating frontend tokens
+        $publicKey = config('agent.panel.public_key');
 
-        if (! $payload) {
+        if (empty($publicKey)) {
+            Log::error('Panel public key not configured');
+            return response()->json([
+                'success' => false,
+                'error' => 'Server configuration error',
+            ], 500);
+        }
+
+        // Validate the JWT token using panel's public key
+        try {
+            $payload = JWT::decode($token, new Key($publicKey, 'RS256'));
+        } catch (\Exception $e) {
+            Log::warning('JWT validation failed', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'error' => 'Invalid or expired token',

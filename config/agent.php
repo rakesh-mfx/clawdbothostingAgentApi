@@ -40,6 +40,12 @@ return [
     'panel' => [
         'url' => env('PANEL_URL', env('AGENT_PANEL_URL', 'https://clawdbot.com')),
         'api_key' => env('PANEL_API_KEY', env('AGENT_PANEL_API_KEY')),
+        // Public key from main panel app for validating frontend JWT tokens
+        'public_key' => env('PANEL_PUBLIC_KEY') ?: (
+            file_exists(storage_path('keys/panel_public.pem'))
+                ? file_get_contents(storage_path('keys/panel_public.pem'))
+                : null
+        ),
     ],
 
     /*
